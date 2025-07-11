@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Virtual - Fisiopatología del Flujo Vaginal Anormal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.9);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .score-card h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .score-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .lab-section {
+            background: rgba(255,255,255,0.95);
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .lab-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .interactive-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pathophysiology-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pathophysiology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .pathophysiology-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .pathophysiology-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .pathophysiology-card p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .case-study {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .case-study h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .parameter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .parameter-control {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .parameter-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .parameter-control input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .parameter-control .value-display {
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .diagnosis-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .diagnosis-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .diagnosis-option {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .diagnosis-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .diagnosis-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .diagnosis-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .result-panel {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .score-board {
+                flex-wrap: wrap;
+            }
+            
+            .interactive-map {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 Laboratorio Virtual de Fisiopatología</h1>
+            <p>Flujo Vaginal Anormal - Experiencia Interactiva</p>
+        </div>
+
+        <div class="score-board">
+            <div class="score-card">
+                <h3>Puntuación</h3>
+                <div class="value" id="score">0</div>
+            </div>
+            <div class="score-card">
+                <h3>Nivel</h3>
+                <div class="value" id="level">1</div>
+            </div>
+            <div class="score-card">
+                <h3>Casos Resueltos</h3>
+                <div class="value" id="casesResolved">0</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div class="lab-section">
+            <h2>🔬 Simulador de Ecosistema Vaginal</h2>
+            <p>Ajusta los parámetros para observar cómo se alteran los mecanismos fisiopatológicos:</p>
+            
+            <div class="parameter-controls">
+                <div class="parameter-control">
+                    <label for="phLevel">pH Vaginal</label>
+                    <input type="range" id="phLevel" min="3.5" max="6.0" step="0.1" value="4.0">
+                    <div class="value-display" id="phValue">4.0</div>
+                </div>
+                
+                <div class="parameter-control">
+                    <label for="lactobacillus">Lactobacillus (%)</label>
+                    <input type="range" id="lactobacillus" min="0" max="100" step="5" value="80">
+                    <div class="value-display" id="lactobacillusValue">80%</div>
+                </div>
+                
+                <div class="parameter-control">
+                    <label for="pathogens">Patógenos (%)</label>
+                    <input type="range" id="pathogens" min="0" max="100" step="5" value="20">
+                    <div class="value-display" id="pathogensValue">20%</div>
+                </div>
+                
+                <div class="parameter-control">
+                    <label for="inflammation">Inflamación</label>
+                    <input type="range" id="inflammation" min="0" max="10" step="1" value="2">
+                    <div class="value-display" id="inflammationValue">2/10</div>
+                </div>
+            </div>
+
+            <div class="result-panel" id="simulationResult">
+                <h3>Estado del Ecosistema: <span id="ecosystemStatus">Normal</span></h3>
+                <p id="ecosystemDescription">Ecosistema vaginal equilibrado con pH ácido y flora normal.</p>
+            </div>
+        </div>
+
+        <div class="lab-section">
+            <h2>Flashcards fisiopatológicas</h2>
+            <p>Haz clic en cada etapa para explorar los mecanismos moleculares:</p>
+            
+            <div class="interactive-map">
+                <div class="pathophysiology-card" data-stage="1">
+                    <h3>Factores Predisponentes</h3>
+                    <p>Hormonales, infecciosos, químicos e inmunológicos</p>
+                </div>
+                
+                <div class="pathophysiology-card" data-stage="2">
+                    <h3>Disrupción Ecosistema</h3>
+                    <p>Alteración pH, disbiosis, pérdida barrera</p>
+                </div>
+                
+                <div class="pathophysiology-card" data-stage="3">
+                    <h3>Cascada Inflamatoria</h3>
+                    <p>IL-1β, TNF-α, activación complemento</p>
+                </div>
+                
+                <div class="pathophysiology-card" data-stage="4">
+                    <h3>Cambios Tisulares</h3>
+                    <p>Edema, eritema, descamación epitelial</p>
+                </div>
+                
+                <div class="pathophysiology-card" data-stage="5">
+                    <h3>Alteración Secreción</h3>
+                    <p>Aumento volumen, cambio composición</p>
+                </div>
+                
+                <div class="pathophysiology-card" data-stage="6">
+                    <h3>Manifestaciones Clínicas</h3>
+                    <p>Flujo anormal, prurito, dispareunia</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lab-section">
+            <h2>🕵️ Casos Clíncos </h2>
+            <div class="case-study" id="currentCase">
+                <h3>Caso 1: Paciente de 25 años</h3>
+                <p><strong>Motivo de consulta:</strong> "Flujo vaginal abundante con mal olor desde hace 1 semana"</p>
+                <p><strong>Antecedentes:</strong> Vida sexual activa, uso de duchas vaginales frecuentes</p>
+                <p><strong>Examen físico:</strong> Flujo gris homogéneo, pH 5.2, prueba de aminas positiva</p>
+                <p><strong>Microscopía:</strong> Clue cells presentes, ausencia de leucocitos</p>
+            </div>
+
+            <div class="diagnosis-section">
+                <h3>¿Cuál es tu diagnóstico?</h3>
+                <div class="diagnosis-options">
+                    <div class="diagnosis-option" data-diagnosis="vaginosis">
+                        <h4>Vaginosis Bacteriana</h4>
+                        <p>pH >4.5, clue cells, olor aminas</p>
+                    </div>
+                    <div class="diagnosis-option" data-diagnosis="candida">
+                        <h4>Candidiasis</h4>
+                        <p>pH <4.5, flujo grumoso</p>
+                    </div>
+                    <div class="diagnosis-option" data-diagnosis="trichomonas">
+                        <h4>Tricomoniasis</h4>
+                        <p>pH >4.5, flujo espumoso</p>
+                    </div>
+                    <div class="diagnosis-option" data-diagnosis="atrophic">
+                        <h4>Vaginitis Atrófica</h4>
+                        <p>Epitelio adelgazado</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="nextCase()">Siguiente Caso</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let level = 1;
+        let casesResolved = 0;
+        let currentCaseIndex = 0;
+
+        const cases = [
+            {
+                title: "Caso 1: Paciente de 25 años",
+                description: "Flujo vaginal abundante con mal olor desde hace 1 semana",
+                details: "Antecedentes: Vida sexual activa, uso de duchas vaginales frecuentes<br>Examen físico: Flujo gris homogéneo, pH 5.2, prueba de aminas positiva<br>Microscopía: Clue cells presentes, ausencia de leucocitos",
+                correct: "vaginosis",
+                explanation: "La combinación de pH >4.5, clue cells y prueba de aminas positiva es diagnóstica de vaginosis bacteriana."
+            },
+            {
+                title: "Caso 2: Paciente de 30 años",
+                description: "Prurito vulvar intenso y flujo blanco espeso",
+                details: "Antecedentes: Diabetes mellitus tipo 2, uso reciente de antibióticos<br>Examen físico: Flujo blanco grumoso, pH 3.8, eritema vulvar<br>Microscopía: Pseudohifas y esporas presentes",
+                correct: "candida",
+                explanation: "pH ácido, flujo grumoso y presencia de pseudohifas confirman candidiasis vulvovaginal."
+            },
+            {
+                title: "Caso 3: Paciente de 28 años",
+                description: "Flujo amarillento espumoso y dispareunia",
+                details: "Antecedentes: Nueva pareja sexual, no uso de preservativo<br>Examen físico: Flujo amarillo-verdoso espumoso, pH 5.8, cérvix en fresa<br>Microscopía: Trichomonas móviles observadas",
+                correct: "trichomonas",
+                explanation: "Flujo espumoso, pH elevado y visualización de trichomonas confirman tricomoniasis."
+            }
+        ];
+
+        // Actualizar parámetros del simulador
+        function updateSimulation() {
+            const ph = parseFloat(document.getElementById('phLevel').value);
+            const lactobacillus = parseInt(document.getElementById('lactobacillus').value);
+            const pathogens = parseInt(document.getElementById('pathogens').value);
+            const inflammation = parseInt(document.getElementById('inflammation').value);
+
+            document.getElementById('phValue').textContent = ph.toFixed(1);
+            document.getElementById('lactobacillusValue').textContent = lactobacillus + '%';
+            document.getElementById('pathogensValue').textContent = pathogens + '%';
+            document.getElementById('inflammationValue').textContent = inflammation + '/10';
+
+            // Determinar estado del ecosistema
+            let status = "Normal";
+            let description = "Ecosistema vaginal equilibrado con pH ácido y flora normal.";
+
+            if (ph > 4.5 && lactobacillus < 50 && pathogens > 20) {
+    status = "Vaginosis Bacteriana";
+    description = "pH alcalino (>4.5), disminución significativa de Lactobacillus (<50%) y proliferación de anaerobios (Gardnerella vaginalis). Riesgo de complicaciones obstétricas y ginecológicas.";
+    
+} else if (ph >= 3.8 && ph <= 4.5 && pathogens > 30 && inflammation > 6) {
+    status = "Candidiasis";
+    description = "pH ácido mantenido (3.8-4.5) pero sobrecrecimiento fúngico significativo (Candida spp.). Respuesta inflamatoria intensa con prurito característico.";
+    
+} else if (ph > 5.0 && inflammation > 8 && pathogens > 40) {
+    status = "Tricomoniasis";
+    description = "pH muy alcalino (>5.0), inflamación severa y presencia de Trichomonas vaginalis. Proceso infeccioso agudo con secreción espumosa característica.";
+    
+} else if (ph > 4.5 && lactobacillus < 70 && pathogens > 10 && pathogens <= 30) {
+    status = "Disbiosis Leve";
+    description = "Desequilibrio inicial de la flora vaginal. pH ligeramente elevado y disminución de lactobacilos protectores. Riesgo de progresión a vaginosis bacteriana.";
+    
+} else if (ph >= 3.8 && ph <= 4.5 && lactobacillus >= 90 && pathogens <= 5) {
+    status = "Flora Normal";
+    description = "Microbiota vaginal saludable. pH ácido óptimo, predominio de lactobacilos y ausencia de patógenos significativos.";
+    
+} else if (ph > 4.5 && inflammation > 5 && pathogens > 15) {
+    status = "Vaginitis Inespecífica";
+    description = "Proceso inflamatorio con alteración del pH y presencia de múltiples microorganismos. Requiere evaluación clínica detallada.";
+    
+} else {
+    status = "Patrón Atípico";
+    description = "Combinación de parámetros que no corresponde a un patrón clásico. Se recomienda evaluación médica especializada.";
+}
+            document.getElementById('ecosystemStatus').textContent = status;
+            document.getElementById('ecosystemDescription').textContent = description;
+        }
+
+        // Mapa fisiopatológico interactivo
+        document.querySelectorAll('.pathophysiology-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remover clase active de todas las tarjetas
+                document.querySelectorAll('.pathophysiology-card').forEach(c => c.classList.remove('active'));
+                
+                // Agregar clase active a la tarjeta clickeada
+                this.classList.add('active');
+                
+                const stage = this.dataset.stage;
+                showStageDetails(stage);
+                
+                // Añadir puntos por exploración
+                updateScore(10);
+            });
+        });
+
+        function showStageDetails(stage) {
+            const details = {
+                1: "Factores hormonales (estrógenos ↓), infecciosos (G. vaginalis, Candida), químicos (duchas vaginales) e inmunológicos (diabetes, inmunosupresión) alteran el equilibrio vaginal.",
+                2: "El pH aumenta >4.5, disminuyen los Lactobacillus productores de ácido láctico y H2O2, proliferan microorganismos patógenos.",
+                3: "Liberación de IL-1β, TNF-α, IL-6. Activación del complemento (C3a, C5a). Quimiotaxis de neutrófilos y activación de mastocitos.",
+                4: "Vasodilatación, aumento de permeabilidad vascular, edema tisular, eritema, descamación epitelial y pérdida de la barrera protectora.",
+                5: "Aumento del exudado vascular, incremento de secreción cervical, cambios en viscosidad y composición, acumulación de detritus celular.",
+                6: "Flujo vaginal anormal (volumen, color, olor), prurito vulvar, ardor, dispareunia, disuria externa, impacto en calidad de vida."
+            };
+
+            alert(details[stage]);
+        }
+
+        // Diagnóstico de casos
+        document.querySelectorAll('.diagnosis-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const diagnosis = this.dataset.diagnosis;
+                const correct = cases[currentCaseIndex].correct;
+                
+                // Limpiar clases previas
+                document.querySelectorAll('.diagnosis-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+
+                if (diagnosis === correct) {
+                    this.classList.add('correct');
+                    updateScore(50);
+                    casesResolved++;
+                    updateUI();
+                    setTimeout(() => {
+                        alert(`¡Correcto! ${cases[currentCaseIndex].explanation}`);
+                    }, 500);
+                } else {
+                    this.classList.add('incorrect');
+                    updateScore(-10);
+                    setTimeout(() => {
+                        alert(`Incorrecto. ${cases[currentCaseIndex].explanation}`);
+                    }, 500);
+                }
+            });
+        });
+
+        function nextCase() {
+            currentCaseIndex = (currentCaseIndex + 1) % cases.length;
+            loadCase(currentCaseIndex);
+        }
+
+        function loadCase(index) {
+            const caseDiv = document.getElementById('currentCase');
+            const currentCase = cases[index];
+            
+            caseDiv.innerHTML = `
+                <h3>${currentCase.title}</h3>
+                <p><strong>Motivo de consulta:</strong> ${currentCase.description}</p>
+                <p>${currentCase.details}</p>
+            `;
+
+            // Limpiar opciones de diagnóstico
+            document.querySelectorAll('.diagnosis-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        function updateScore(points) {
+            score += points;
+            if (score < 0) score = 0;
+            
+            // Calcular nivel basado en puntuación
+            level = Math.floor(score / 100) + 1;
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('casesResolved').textContent = casesResolved;
+            
+            // Actualizar barra de progreso
+            const progress = (score % 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Event listeners para los controles
+        document.getElementById('phLevel').addEventListener('input', updateSimulation);
+        document.getElementById('lactobacillus').addEventListener('input', updateSimulation);
+        document.getElementById('pathogens').addEventListener('input', updateSimulation);
+        document.getElementById('inflammation').addEventListener('input', updateSimulation);
+
+        // Inicializar
+        updateSimulation();
+        loadCase(0);
+    </script>
+</body>
+</html>
