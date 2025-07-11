@@ -745,10 +745,47 @@
             const caseDiv = document.getElementById('currentCase');
             const currentCase = cases[index];
             
-            caseDiv.innerHTML = `
+              caseDiv.innerHTML = `
                 <h3>${currentCase.title}</h3>
                 <p><strong>Motivo de consulta:</strong> ${currentCase.description}</p>
                 <p>${currentCase.details}</p>
             `;
 
-            // L
+            // Limpiar opciones de diagnóstico
+            document.querySelectorAll('.diagnosis-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        function updateScore(points) {
+            score += points;
+            if (score < 0) score = 0;
+            
+            // Calcular nivel basado en puntuación
+            level = Math.floor(score / 100) + 1;
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('casesResolved').textContent = casesResolved;
+            
+            // Actualizar barra de progreso
+            const progress = (score % 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Event listeners para los controles
+        document.getElementById('phLevel').addEventListener('input', updateSimulation);
+        document.getElementById('lactobacillus').addEventListener('input', updateSimulation);
+        document.getElementById('pathogens').addEventListener('input', updateSimulation);
+        document.getElementById('inflammation').addEventListener('input', updateSimulation);
+
+        // Inicializar
+        updateSimulation();
+        loadCase(0);
+    </script>
+</body>
+</html>
